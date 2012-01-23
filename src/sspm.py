@@ -1,6 +1,9 @@
 # -*- coding: utf-8 -*-
 import os
 import ystockquote
+import locale
+
+locale.setlocale( locale.LC_ALL, '' )
 
 def printHeader():
 	print('');
@@ -43,21 +46,24 @@ total_value = [];
 
 for l in lines:
 	values = l.split();
+	stockPrice = float(ystockquote.get_price(values[0]));
+
 	symbol.append(values[0]);
 	shares.append(int(values[1]));
 	purchase_price.append(float(values[2]));
-
-	stockPrice = float(ystockquote.get_price(values[0]));
 	current_price.append(stockPrice);
-
 	change.append(stockPrice - float(values[2]));
-	total_value.append(stockPrice * int(values[1]));
-
-print(total_value);
+	total_value.append(stockPrice * float(values[1]));
 
 printHeader();
 
-print('│        │          │                │               │          │              │');
+for i in range(len(symbol)):
+	print('│ {0:>6} │ {1:>8} │ {2:>14} │ {3:>13} │ {4:>8} │ {5:>12} │'.format(symbol[i], shares[i], locale.currency(purchase_price[i]), locale.currency(current_price[i]), locale.currency(change[i]), locale.currency(total_value[i]) ));
+	if(i != len(symbol) - 1):
+		printFooter();
+
+
+#print('│        │          │                │               │          │              │');
 
 printHeaderTotals();
 
