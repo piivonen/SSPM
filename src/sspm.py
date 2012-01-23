@@ -15,6 +15,10 @@ except IOError as e:
 	exit();
 
 print('┌────────┬──────────┬────────────────┬───────────────┬──────────┬──────────────┐');
-print('│ SYMBOL'.ljust(11) + '│' + '  SHARES'.ljust(10) + '│' + ' PURCHASE PRICE'.ljust(16) + '│' +
-	' CURRENT PRICE'.ljust(15) + '│' + '  CHANGE'.ljust(10) + '│' +  ' TOTAL VALUE'.ljust(14) + '│');
+print('│ SYMBOL'.ljust(11) + '│' + '  SHARES'.ljust(10) + '│' + ' PURCHASE PRICE'.ljust(16) + '│' + ' CURRENT PRICE'.ljust(15) + '│' + '  CHANGE'.ljust(10) + '│' +  ' TOTAL VALUE'.ljust(14) + '│');
+
+print('├────────┼──────────┼────────────────┼───────────────┼──────────┼──────────────┤');
+
+print('│        │          │                │               │          │              │');
+
 print('└────────┴──────────┴────────────────┴───────────────┴──────────┴──────────────┘');
