@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 import os
-import ystockquote
+import urllib
 import locale
 
 locale.setlocale( locale.LC_ALL, '' )
@@ -33,6 +33,12 @@ def printTotalRow(total_change, total_value):
 	print('                                                │ {0:>12} │ {1:>12} │'.format(locale.currency(total_change), locale.currency(total_value)));
 	return;
 
+def getStockPrice(symbol):
+	url = 'http://finance.yahoo.com/d/quotes.csv?s={0}&f={1}'.format(symbol, 'l1');
+	return urllib.urlopen(url).read().strip().strip('"')
+
+###############################################################################################	
+
 portfolioPath = 'portfolio.txt';
 try:
 	file = open(portfolioPath,'r');
@@ -59,7 +65,7 @@ for l in lines:
 	symbol.append(values[0]);
 	shares.append(int(values[1]));
 	purchase_price.append(float(values[2]));
-	current_price.append(float(ystockquote.get_price(values[0])));
+	current_price.append(float(getStockPrice(values[0])));
 	change.append(current_price[-1] - float(values[2]));
 	value.append(current_price[-1] * float(values[1]));
 
