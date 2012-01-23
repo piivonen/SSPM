@@ -33,7 +33,7 @@ def printTotalRow(total_change, total_value):
 	print('                                                │ {0:>12} │ {1:>12} │'.format(locale.currency(total_change), locale.currency(total_value)));
 	return;
 
-portfolioPath = os.getenv('HOME')+'/.sspm';
+portfolioPath = 'portfolio.txt';
 try:
 	file = open(portfolioPath,'r');
 except IOError as e:
