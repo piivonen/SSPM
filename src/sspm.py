@@ -22,7 +22,6 @@ def printFooterTotals():
 	print('');
 	return;
 
-stock = ystockquote.get_price('BAC');
 
 portfolioPath = os.getenv('HOME')+'/.sspm';
 try:
@@ -34,7 +33,27 @@ except IOError as e:
 	print('ie. BAC 250 5.67');
 	exit();
 
+lines = file.read().splitlines();
+symbol = [];
+shares = [];
+purchase_price = [];
+current_price = [];
+change = [];
+total_value = [];
 
+for l in lines:
+	values = l.split();
+	symbol.append(values[0]);
+	shares.append(int(values[1]));
+	purchase_price.append(float(values[2]));
+
+	stockPrice = float(ystockquote.get_price(values[0]));
+	current_price.append(stockPrice);
+
+	change.append(stockPrice - float(values[2]));
+	total_value.append(stockPrice * int(values[1]));
+
+print(total_value);
 
 printHeader();
 
