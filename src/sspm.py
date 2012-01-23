@@ -7,24 +7,31 @@ locale.setlocale( locale.LC_ALL, '' )
 
 def printHeader():
 	print('');
-	print('┌────────┬──────────┬────────────────┬───────────────┬──────────┬──────────────┐');
-	print('│ SYMBOL'.ljust(11) + '│' + '  SHARES'.ljust(10) + '│' + ' PURCHASE PRICE'.ljust(16) + '│' + ' CURRENT PRICE'.ljust(15) + '│' + '  CHANGE'.ljust(10) + '│' +  ' TOTAL VALUE'.ljust(14) + '│');
-	print('├────────┼──────────┼────────────────┼───────────────┼──────────┼──────────────┤');
+	print('┌────────┬──────────┬───────────┬───────────────┬──────────────┬──────────────┐');
+	print('│ {0} │ {1:<8} │ {2:<9} │ {3:<13} │ {4:<12} │ {5:<12} │'.format('SYMBOL','SHARES','PURCHASE','PRICE', 'CHANGE', 'VALUE'));
+	print('├────────┼──────────┼───────────┼───────────────┼──────────────┼──────────────┤');
 	return;
 
 def printFooter():
-	print('├────────┼──────────┼────────────────┼───────────────┼──────────┼──────────────┤');
+	print('├────────┼──────────┼───────────┼───────────────┼──────────────┼──────────────┤');
 	return;
 
 def printHeaderTotals():
-	print('└────────┴──────────┴────────────────┴───────────────┼──────────┼──────────────┤');
+	print('└────────┴──────────┴───────────┴───────────────┼──────────────┼──────────────┤');
 	return;
 
 def printFooterTotals():
-	print('                                                     └──────────┴──────────────┘');
+	print('                                                └──────────────┴──────────────┘');
 	print('');
 	return;
 
+def printRow(symbol, shares, purchase_price, current_price, change, value):
+	print('│ {0:>6} │ {1:>8} │ {2:>9} │ {3:>13} │ {4:>12} │ {5:>12} │'. format(symbol, shares, locale.currency(purchase_price), locale.currency(current_price), locale.currency(change), locale.currency(value) ));
+	return;
+
+def printTotalRow(total_change, total_value):
+	print('                                                │ {0:>12} │ {1:>12} │'.format(locale.currency(total_change), locale.currency(total_value)));
+	return;
 
 portfolioPath = os.getenv('HOME')+'/.sspm';
 try:
@@ -42,31 +49,30 @@ shares = [];
 purchase_price = [];
 current_price = [];
 change = [];
-total_value = [];
+value = [];
+
+total_change = 0;
+total_value = 0;
 
 for l in lines:
 	values = l.split();
-	stockPrice = float(ystockquote.get_price(values[0]));
-
 	symbol.append(values[0]);
 	shares.append(int(values[1]));
 	purchase_price.append(float(values[2]));
-	current_price.append(stockPrice);
-	change.append(stockPrice - float(values[2]));
-	total_value.append(stockPrice * float(values[1]));
+	current_price.append(float(ystockquote.get_price(values[0])));
+	change.append(current_price[-1] - float(values[2]));
+	value.append(current_price[-1] * float(values[1]));
+
+	total_change += change[-1] * shares[-1];
+	total_value += current_price[-1] * shares[-1];
 
 printHeader();
 
 for i in range(len(symbol)):
-	print('│ {0:>6} │ {1:>8} │ {2:>14} │ {3:>13} │ {4:>8} │ {5:>12} │'.format(symbol[i], shares[i], locale.currency(purchase_price[i]), locale.currency(current_price[i]), locale.currency(change[i]), locale.currency(total_value[i]) ));
+	printRow(symbol[i], shares[i], purchase_price[i], current_price[i], change[i], value[i]);
 	if(i != len(symbol) - 1):
 		printFooter();
 
-
-#print('│        │          │                │               │          │              │');
-
 printHeaderTotals();
-
-print('                                                     │          │              │');
-
+printTotalRow(total_change, total_value);
 printFooterTotals();
