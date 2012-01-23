@@ -2,6 +2,26 @@
 import os
 import ystockquote
 
+def printHeader():
+	print('');
+	print('┌────────┬──────────┬────────────────┬───────────────┬──────────┬──────────────┐');
+	print('│ SYMBOL'.ljust(11) + '│' + '  SHARES'.ljust(10) + '│' + ' PURCHASE PRICE'.ljust(16) + '│' + ' CURRENT PRICE'.ljust(15) + '│' + '  CHANGE'.ljust(10) + '│' +  ' TOTAL VALUE'.ljust(14) + '│');
+	print('├────────┼──────────┼────────────────┼───────────────┼──────────┼──────────────┤');
+	return;
+
+def printFooter():
+	print('├────────┼──────────┼────────────────┼───────────────┼──────────┼──────────────┤');
+	return;
+
+def printHeaderTotals():
+	print('└────────┴──────────┴────────────────┴───────────────┼──────────┼──────────────┤');
+	return;
+
+def printFooterTotals():
+	print('                                                     └──────────┴──────────────┘');
+	print('');
+	return;
+
 stock = ystockquote.get_price('BAC');
 
 portfolioPath = os.getenv('HOME')+'/.sspm';
@@ -14,11 +34,14 @@ except IOError as e:
 	print('ie. BAC 250 5.67');
 	exit();
 
-print('┌────────┬──────────┬────────────────┬───────────────┬──────────┬──────────────┐');
-print('│ SYMBOL'.ljust(11) + '│' + '  SHARES'.ljust(10) + '│' + ' PURCHASE PRICE'.ljust(16) + '│' + ' CURRENT PRICE'.ljust(15) + '│' + '  CHANGE'.ljust(10) + '│' +  ' TOTAL VALUE'.ljust(14) + '│');
 
-print('├────────┼──────────┼────────────────┼───────────────┼──────────┼──────────────┤');
+
+printHeader();
 
 print('│        │          │                │               │          │              │');
 
-print('└────────┴──────────┴────────────────┴───────────────┴──────────┴──────────────┘');
+printHeaderTotals();
+
+print('                                                     │          │              │');
+
+printFooterTotals();
