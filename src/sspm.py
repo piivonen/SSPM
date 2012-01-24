@@ -2,6 +2,7 @@
 import os
 import urllib
 import locale
+import sys
 
 locale.setlocale( locale.LC_ALL, '' )
 
@@ -37,16 +38,29 @@ def getStockPrice(symbol):
 	url = 'http://finance.yahoo.com/d/quotes.csv?s={0}&f={1}'.format(symbol, 'l1');
 	return urllib.urlopen(url).read().strip().strip('"')
 
-###############################################################################################	
-
-portfolioPath = 'portfolio.txt';
-try:
-	file = open(portfolioPath,'r');
-except IOError as e:
+def printErrorMsg():
 	print('Error reading '+portfolioPath+' file.');
 	print('Create '+portfolioPath+' and add your stock information.');
 	print('In format: SYMBOL SHARES PURCHASE_PRICE');
 	print('ie. BAC 250 5.67');
+	return;
+
+def printParamErrorMsg():
+	print('Please pass the location of your stock portfolio file.');
+	return;
+
+###############################################################################################	
+
+if(len(sys.argv) <= 1):
+	printParamErrorMsg();
+	exit();
+
+portfolioPath = sys.argv[1];
+
+try:
+	file = open(portfolioPath,'r');
+except IOError as e:
+	printFileErrorMsg();
 	exit();
 
 lines = file.read().splitlines();
