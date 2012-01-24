@@ -4,6 +4,10 @@ import urllib
 import locale
 import sys
 
+GREEN = '\033[92m'
+RED = '\033[91m'
+END_COLOR = '\033[0m'
+
 locale.setlocale( locale.LC_ALL, '' )
 
 def printHeader():
@@ -27,11 +31,19 @@ def printFooterTotals():
 	return;
 
 def printRow(symbol, shares, purchase_price, current_price, change, value):
-	print('│ {0:>6} │ {1:>8} │ {2:>9} │ {3:>13} │ {4:>12} │ {5:>12} │'. format(symbol, shares, locale.currency(purchase_price), locale.currency(current_price), locale.currency(change), locale.currency(value) ));
+	# if the stock has gone up or down, color it
+	change_color = GREEN
+	if(change < 0):
+		change_color = RED
+	print('│ {0:>6} │ {1:>8} │ {2:>9} │ {3:>13} │ {4}{5:>12}{6} │ {7:>12} │'. format(symbol, shares, locale.currency(purchase_price), locale.currency(current_price), change_color, locale.currency(change), END_COLOR, locale.currency(value) ));
 	return;
 
 def printTotalRow(total_change, total_value):
-	print('                                                │ {0:>12} │ {1:>12} │'.format(locale.currency(total_change), locale.currency(total_value)));
+	# if the stock has gone up or down, color it
+	change_color = GREEN
+	if(total_change < 0):
+		change_color = RED
+	print('                                                │ {0}{1:>12}{2} │ {3:>12} │'.format(change_color, locale.currency(total_change), END_COLOR, locale.currency(total_value)));
 	return;
 
 def getStockPrice(symbol):
