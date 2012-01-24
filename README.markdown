@@ -14,7 +14,7 @@ Now you can run SSMP with (if using ~/.ssmp as install directory):
 
 	python ~/.ssmp/ssmp.py ~/.ssmp/portfolio.txt
 
-You can alias this by adding the following to your **~.bashrc**:
+You can alias this by adding the following to your **~/.bashrc**:
 
 	alias sspm="python ~/.ssmp/ssmp.py ~/.ssmp/portfolio.txt"
 
