@@ -8,17 +8,17 @@ SSPM requires python to have been installed.
 
 ## Installation 
 
-Place the **sspm.py** file and the **portfolio.txt** file anywhere on your system. (ie. ~/.ssmp)
+Place the **sspm.py** file and the **portfolio.txt** file anywhere on your system. (ie. ~/.sspm)
 
-Now you can run SSMP with (if using ~/.ssmp as install directory):
+Now you can run SSPM with (if using ~/.sspm as install directory):
 
-	python ~/.ssmp/ssmp.py ~/.ssmp/portfolio.txt
+	python ~/.sspm/sspm.py ~/.sspm/portfolio.txt
 
 You can alias this by adding the following to your **~/.bashrc**:
 
-	alias sspm="python ~/.ssmp/ssmp.py ~/.ssmp/portfolio.txt"
+	alias sspm="python ~/.sspm/sspm.py ~/.sspm/portfolio.txt"
 
-Now you can run SSMP any time in the terminal just by running:
+Now you can run SSPM any time in the terminal just by running:
 
 	sspm
 
@@ -35,6 +35,8 @@ Just add another line for each stock you want to track.
 ## Sample Output
 
 This is an example of what the output looks like on a terminal.
+
+>sspm
 
 	┌────────┬──────────┬───────────┬───────────────┬──────────────┬──────────────┐ 
 	│ SYMBOL │ SHARES   │ PURCHASE  │ PRICE         │ CHANGE       │ VALUE        │ 
