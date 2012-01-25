@@ -12,38 +12,37 @@ locale.setlocale( locale.LC_ALL, '' )
 
 def printHeader():
 	print('');
-	print('┌────────┬──────────┬───────────┬───────────────┬──────────────┬──────────────┐');
-	print('│ {0} │ {1:<8} │ {2:<9} │ {3:<13} │ {4:<12} │ {5:<12} │'.format('SYMBOL','SHARES','PURCHASE','PRICE', 'CHANGE', 'VALUE'));
-	print('├────────┼──────────┼───────────┼───────────────┼──────────────┼──────────────┤');
+	print('┌────────┬────────┬──────────────┬──────────────┬──────────────┬───────────┐');
+	print('│ {0:<6} │ {1:<6} │ {2:<12} │ {3:<12} │ {4:<12} │ {5:<9} │'.format('SYMBOL','SHARES','PRICE PAID','MARKET VALUE','CHANGE $','CHANGE %'));
 	return;
 
 def printFooter():
-	print('├────────┼──────────┼───────────┼───────────────┼──────────────┼──────────────┤');
+	print('├────────┼────────┼──────────────┼──────────────┼──────────────┼───────────┤');
 	return;
 
 def printHeaderTotals():
-	print('└────────┴──────────┴───────────┴───────────────┼──────────────┼──────────────┤');
+	print('└────────┴────────┼──────────────┼──────────────┼──────────────┼───────────┤');
 	return;
 
 def printFooterTotals():
-	print('                                                └──────────────┴──────────────┘');
+	print('                  └──────────────┴──────────────┴──────────────┴───────────┘');
 	print('');
 	return;
 
-def printRow(symbol, shares, purchase_price, current_price, change, value):
+def printRow(symbol, shares, price_paid, market_value, change_money, change_percent):
 	# if the stock has gone up or down, color it
 	change_color = GREEN
-	if(change < 0):
+	if(change_money < 0):
 		change_color = RED
-	print('│ {0:>6} │ {1:>8} │ {2:>9} │ {3:>13} │ {4}{5:>12}{6} │ {7:>12} │'. format(symbol, shares, locale.currency(purchase_price), locale.currency(current_price), change_color, locale.currency(change), END_COLOR, locale.currency(value) ));
+	print('│ {0:<6} │ {1:>6} │ {2:>12} │ {3:>12} │ {4}{5:>12}{6} │ {7}{8:>8.2f}%{9} │'. format(symbol, shares, locale.currency(int(price_paid), grouping=True)[:-3], locale.currency(int(market_value), grouping=True)[:-3], change_color, locale.currency(int(change_money), grouping=True)[:-3], END_COLOR, change_color, change_percent * 100, END_COLOR ));
 	return;
 
-def printTotalRow(total_change, total_value):
+def printTotalRow(total_price_paid, total_market_value, total_change_money, total_change_percent):
 	# if the stock has gone up or down, color it
-	change_color = GREEN
-	if(total_change < 0):
-		change_color = RED
-	print('                                                │ {0}{1:>12}{2} │ {3:>12} │'.format(change_color, locale.currency(total_change), END_COLOR, locale.currency(total_value)));
+	status_color = GREEN
+	if(total_change_money < 0):
+		status_color = RED
+	print('                  │ {0:>12} │ {1:>12} │ {2}{3:>12}{4} │ {5}{6:>8.2f}%{7} │'.format(locale.currency(int(total_price_paid), grouping=True)[:-3],locale.currency(int(total_market_value),grouping=True)[:-3],status_color,locale.currency(int(total_change_money),grouping=True)[:-3],END_COLOR,status_color,total_change_percent * 100,END_COLOR));
 	return;
 
 def getStockPrice(symbol):
@@ -78,33 +77,41 @@ except IOError as e:
 lines = file.read().splitlines();
 symbol = [];
 shares = [];
-purchase_price = [];
-current_price = [];
-change = [];
-value = [];
+price_paid = [];
+market_value = [];
+change_money = [];
+change_percent = [];
 
-total_change = 0;
-total_value = 0;
+total_price_paid = 0;
+total_market_value = 0;
+total_change_money = 0;
+total_change_percent = 0;
 
 for l in lines:
+	# SYMBOL SHARES PURCHASE_PRICE
 	values = l.split();
 	symbol.append(values[0]);
 	shares.append(int(values[1]));
-	purchase_price.append(float(values[2]));
-	current_price.append(float(getStockPrice(values[0])));
-	change.append(current_price[-1] - float(values[2]));
-	value.append(current_price[-1] * float(values[1]));
+	price_paid.append(float(values[2]) * shares[-1]);
+	market_value.append(float(getStockPrice(values[0])) * shares[-1]);
+	change_money.append(market_value[-1] - price_paid[-1]);
+	change_percent.append(change_money[-1] / price_paid[-1]);
 
-	total_change += change[-1] * shares[-1];
-	total_value += current_price[-1] * shares[-1];
+	# Add totals
+	total_price_paid += price_paid[-1];
+	total_market_value += market_value[-1];
+	total_change_money += change_money[-1];
+
+total_change_percent = total_change_money / total_price_paid;
 
 printHeader();
+printFooter();
 
 for i in range(len(symbol)):
-	printRow(symbol[i], shares[i], purchase_price[i], current_price[i], change[i], value[i]);
+	printRow(symbol[i], shares[i], price_paid[i], market_value[i], change_money[i], change_percent[i]);
 	if(i != len(symbol) - 1):
 		printFooter();
 
 printHeaderTotals();
-printTotalRow(total_change, total_value);
+printTotalRow(total_price_paid, total_market_value, total_change_money, total_change_percent);
 printFooterTotals();
